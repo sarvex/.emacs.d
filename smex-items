@@ -1,8 +1,8 @@
 
 ;; ----- smex-history -----
 (
- eval-buffer
  package-list-packages
+ eval-buffer
  ag
  cd
  5x5
@@ -12,6 +12,6 @@
 
 ;; ----- smex-data -----
 (
- (package-list-packages . 1)
+ (package-list-packages . 2)
  (eval-buffer . 1)
 )

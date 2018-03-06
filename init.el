@@ -26,7 +26,6 @@
 ;;; Commentary:
 ;(byte-recompile-directory (expand-file-name "~/.emacs.d/elpa") 0)
 
-
 (setq user-full-name "Sarvex Jatasra")
 (setq user-mail-address "sarvex.jatasra@gmail.com")
 
@@ -85,16 +84,16 @@
 (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 (setq delete-by-moving-to-trash (or (not (eq system-type 'darwin)) (fboundp 'system-move-file-to-trash)))
 
-
-
 ;;; Package management
 (setq load-prefer-newer t)
 
 (require #'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("elpa" . "http://elpa.gnu.org/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
 (package-initialize)
 
 ;; Bootstrap `use-package'
@@ -104,11 +103,10 @@
 (eval-when-compile (require #'use-package))
 (setq use-package-always-ensure t)
 (require #'bind-key)
-(require #'diminish)
 (require #'subr-x)
 (require #'rx)
 (require #'time-date)
-
+
 ;;; Key binding
 ;(bind-key "C-c f v d" #'add-dir-local-variable)
 ;(bind-key "C-c f v l" #'add-file-local-variable)
@@ -117,7 +115,7 @@
 (bind-key "C-c T d" #'toggle-debug-on-error)
 (bind-key "C-c h b" #'describe-personal-keybindings)
 (bind-key "C-c t v" #'variable-pitch-mode)
-
+
 ;;; Mac Environment fixup
 (use-package exec-path-from-shell
   :if
@@ -139,7 +137,7 @@
 (setq mac-right-command-modifier 'left mac-right-option-modifier 'none)
 (setq mac-function-modifier 'hyper)
 
-
+
 ;;; Customization interface
 (defconst my-custom-file (locate-user-emacs-file "custom.el")
   "File used to store settings from Customization UI.")
@@ -151,7 +149,7 @@
     (setq custom-buffer-verbose-help nil)
     (setq custom-unlispify-tag-names nil custom-unlispify-menu-entries nil))
   :init (load my-custom-file 'no-error 'no-message))
-
+
 ;;; User interface
 
 (when (window-system)
@@ -159,7 +157,8 @@
   (menu-bar-mode -1)
   (scroll-bar-mode -1))
 
-(use-package diminish)
+(use-package diminish
+  :config (require #'diminish))
 
 (use-package unicode-fonts
   :init (unicode-fonts-setup))
@@ -181,18 +180,16 @@
   :config
   (progn
     (setq dynamic-fonts-preferred-proportional-fonts
-      '("Fira Sans" "Helvetica" "Segoe UI" "DejaVu Sans" "Bitstream Vera"
-        "Tahoma" "Verdana" "Arial Unicode MS" "Arial"))
+      '("Nono Sans" "Fira Sans" "Helvetica" "Segoe UI" "DejaVu Sans" "Bitstream Vera" "Tahoma" "Verdana" "Arial Unicode MS" "Arial"))
     (setq dynamic-fonts-preferred-proportional-point-size
       (pcase system-type (`darwin 13) (`windows-nt 10) (`gnu/linux 13)))
     (setq dynamic-fonts-preferred-monospace-fonts
-      '("Ubuntu Mono" "Source Code Pro" "Anonymous Pro" "Inconsolata" "Consolas" "Fira Mono"
-        "Menlo" "DejaVu Sans Mono" "Bitstream Vera Mono" "Courier New"))
+      '("Noto Mono" "Ubuntu Mono" "Source Code Pro" "Anonymous Pro" "Inconsolata" "Consolas" "Fira Mono" "Menlo" "DejaVu Sans Mono" "Bitstream Vera Mono" "Courier New"))
     (setq dynamic-fonts-preferred-monospace-point-size
       (pcase system-type (`darwin 13) (`windows-nt 10) (`gnu/linux 13)))
     (dynamic-fonts-setup)))
 
-
+
 ;;; The mode line
 (use-package powerline
   :init (require #'powerline)
@@ -246,15 +243,6 @@
     (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
     (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)))
 
-(use-package deft
-  :init (require #'deft)
-  :config
-  (progn
-    (setq deft-extension "org")
-    (setq deft-text-mode 'org-mode)
-    (setq deft-use-filename-as-title t)))
-
-
 ;;; The minibuffer
 (use-package savehist
   :init (savehist-mode t)
@@ -277,9 +265,6 @@
     (setq ido-default-buffer-method 'selected-window)
     (setq ido-use-virtual-buffers t)
     (setq ido-use-faces nil)))
-
-(use-package ido-ubiquitous
-  :init (ido-ubiquitous-mode))
 
 (use-package ido-at-point
   :init (require #'ido-at-point)
@@ -307,7 +292,7 @@
          ("M-X" . smex-major-mode-commands)))
 
 (use-package diffview)
-
+
 ;;; Buffer, Windows and Frames
 
 (setq frame-resize-pixelwise t)
@@ -383,7 +368,7 @@
 (use-package git-gutter-fringe+
   :init (require #'git-gutter-fringe+)
   :config (setq git-gutter-fr+-side 'right-fringe))
-
+
 ;;; File handling
 
 (setq backup-directory-alist `((".*" . ,(locate-user-emacs-file ".backup")))
@@ -435,7 +420,7 @@
 
 (use-package launch
   :init (global-launch-mode))
-
+
 ;;; Basic editing
 
 (use-package electric
@@ -509,7 +494,7 @@
   :init (server-start))
 
 (bind-key [remap just-one-space] #'cycle-spacing)
-
+
 ;;; Navigation and scrolling
 
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
@@ -553,7 +538,7 @@
 
 (use-package imenu-anywhere                        ; IDO-based imenu across open buffers
   :bind (("C-c i" . imenu-anywhere)))
-
+
 ;;; Search
 (use-package ag                                    ; Search code in files/projects
   :bind (("C-c a a" . ag-regexp)
@@ -573,7 +558,7 @@
 
 (use-package wgrep-ag)
 
-
+
 ;;; Highlights
 (use-package whitespace                            ; Highlight bad whitespace
   :config (progn
@@ -632,7 +617,7 @@
   :init (require #'color-moccur))
 
 
-
+
 ;;; Lisp
 (use-package paredit
   :config
@@ -662,7 +647,6 @@
                   clojure-mode-hook))
     (add-hook hook #'adjust-parens-mode)))
 
-
 ;;; Skeletons, completion and expansion
 
 (setq completion-cycle-threshold 5)
@@ -677,7 +661,7 @@
         try-expand-list
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol)))
-
+
 ;;; Company Mode Auto Completions
 
 (use-package company
@@ -799,7 +783,7 @@
   :config (require 'company-web)
   :init (add-to-list 'company-backends 'company-web))
 
-
+
 ;;; Spelling and syntax checking
 (use-package ispell                                ; Spell checking
   :if (eq system-type 'darwin)
@@ -848,7 +832,7 @@
   :init (require #'volatile-highlights)
   :config (volatile-highlights-mode t)
   :diminish volatile-highlights-mode)
-
+
 ;;; Text editing
 (use-package tildify
   :bind (("C-c u t" . tildify-region))
@@ -870,7 +854,7 @@
   :init (require #'hungry-delete)
   :config (global-hungry-delete-mode))
 
-
+
 ;;; LaTeX with AUCTeX
 (use-package tex-mode                              ; TeX mode
   :config (font-lock-add-keywords
@@ -962,7 +946,7 @@
         "{%l}"))))
       (setq reftex-cite-format 'biblatex)))
   :diminish reftex-mode)
-
+
 ;; EShell
 (use-package eshell
   :bind ("M-e" . eshell)
@@ -972,7 +956,7 @@
       eshell-save-history-on-exit t eshell-buffer-shorthand t)))
 
 (add-hook 'emacs-lisp-mode-hook #'flyspell-prog-mode)
-
+
 ;;; Other markup languages
 (use-package rst                                   ; ReStructuredText
   :config (setq rst-indent-literal-minimized 3 rst-indent-literal-normal 3)
@@ -1004,7 +988,7 @@
 (use-package graphviz-dot-mode                     ; Graphviz
   :config (setq graphviz-dot-indent-width 4))
 
-
+
 ;;; Java
 (use-package grails-mode
   :diminish grails-mode)
@@ -1023,7 +1007,7 @@
 
 (use-package mvn)
 
-
+
 ;;; Programming utilities
 (use-package eldoc
   :diminish eldoc-mode
@@ -1128,7 +1112,7 @@
 
 (use-package autodisass-llvm-bitcode
   :init (require #'autodisass-llvm-bitcode))
-
+
 ;;; Generic Lisp
 
 (use-package paredit
@@ -1194,7 +1178,7 @@
 
 (use-package geiser
   :init (setq geiser-active-implementations '(racket chicken guile)))
-
+
 ;;; Cucumber
 (use-package feature-mode                          ; Feature files for ecukes/cucumber
   :config (progn
@@ -1202,21 +1186,21 @@
     (add-hook 'feature-mode-hook #'whitespace-mode)
     (add-hook 'feature-mode-hook #'whitespace-cleanup-mode)
     (add-hook 'feature-mode-hook #'flyspell-mode)))
-
+
 ;;; Lua
 (use-package lua-mode
   :mode ("\\.lua\\'" . lua-mode)
   :interpreter ("lua" . lua-mode))
-
+
 ;;; Markdown
 (use-package markdown-mode
   :mode ("\\.md\\'" . markdown-mode))
-
+
 ;;; CSV
 (use-package csv-mode
   :mode "\\.csv\\'")
 
-
+
 ;;; Clojure
 (use-package cider
   :config (progn (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
@@ -1257,7 +1241,7 @@
 
 (use-package 4clojure)
 
-
+
 ;;; Python
 (use-package python
   :config (progn
@@ -1297,7 +1281,7 @@
 (use-package flycheck-pyflakes
   :init (require #'flycheck-pyflakes)
   :config (add-hook 'python-mode-hook #'flycheck-mode))
-
+
 ;;; Go
 (use-package go-direx
   :init (require #'go-direx)
@@ -1331,7 +1315,7 @@
 (use-package golint)
 (use-package gotest)
 
-
+
 ;;; C / C++
 (use-package c-eldoc
   :config (add-hook 'c-mode-hook #'c-turn-on-eldoc-mode))
@@ -1345,11 +1329,6 @@
   :config (progn (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
      (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)))
 
-(use-package flycheck-google-cpplint
-  :init (progn
-      (require #'flycheck-google-cpplint)
-      (flycheck-add-next-checker 'c/c++-clang 'c/c++-googlelint 'append)))
-
 ;;; Ruby
 (use-package inf-ruby                              ; Ruby REPL
   :init (add-hook 'ruby-mode-hook #'inf-ruby-minor-mode)
@@ -1363,7 +1342,7 @@
 
 (use-package robe                                  ; Ruby backend for Emacs
   :config (add-to-list 'company-backends 'company-robe))
-
+
 ;;; Rust
 (use-package rust-mode
   :init (require #'rust-mode))
@@ -1414,7 +1393,7 @@ is run with prefix argument - also execute resulting binary."
   (let ((compile-command (rust-compile-command (or force-run
      (rust-test-file-p buffer-file-name)))))
     (recompile)))
-
+
 ;;; .NET
 (use-package csharp-mode)
 
@@ -1422,7 +1401,7 @@ is run with prefix argument - also execute resulting binary."
   :mode "\\.fs[iylx]?$")
 
 (use-package omnisharp)
-
+
 ;;; Haskell
 (use-package haskell-mode
   :config (progn (add-hook 'haskell-mode-hook 'turn-on-hi2)
@@ -1473,7 +1452,7 @@ is run with prefix argument - also execute resulting binary."
 (use-package company-ghc
   :config (add-to-list 'company-backends '(company-ghc :with company-dabbrev-code)))
 
-
+
 ;;; Erlang
 (use-package erlang
   :config (require #'erlang-start))
@@ -1481,7 +1460,7 @@ is run with prefix argument - also execute resulting binary."
 (use-package edts
   :config (require #'edts-start))
 
-
+
 ;;; Elixir
 (use-package alchemist
   :config (setq alchemist-project-compile-when-needed t)
@@ -1496,19 +1475,19 @@ is run with prefix argument - also execute resulting binary."
    (elixir-cos-mode t)))))
 
 (use-package elixir-yasnippets)
-
+
 ;;; Julia
 (use-package julia-mode
   :init (require #'julia-mode))
-
+
 ;;; Idris
 (use-package idris-mode)
-
+
 
 (use-package kivy-mode
   :init (require #'kivy-mode)
   :mode ("\\.kv$" . kivy-mode))
-
+
 ;;; OCaml
 (use-package tuareg                                ; OCaml editing
   :config (progn
@@ -1523,7 +1502,7 @@ is run with prefix argument - also execute resulting binary."
 
 (use-package flycheck-ocaml                        ; Check OCaml code with Merlin
   :init (with-eval-after-load 'merlin (flycheck-ocaml-setup)))
-
+
 ;;; Web languages
 
 (use-package web-mode                              ; Template editing
@@ -1552,7 +1531,7 @@ is run with prefix argument - also execute resulting binary."
   :init (add-hook 'css-mode-hook #'turn-on-css-eldoc))
 
 (use-package php-mode)
-
+
 ;;; Misc programming languages
 (use-package sh-script                             ; Shell scripts
   :mode ("\\.zsh\\'" . sh-mode)
@@ -1578,12 +1557,12 @@ is run with prefix argument - also execute resulting binary."
 (use-package swift-mode                            ; Swift sources
   :config (with-eval-after-load 'flycheck (add-to-list 'flycheck-checkers 'swift)))
 
-
+
 ;;; Databases
 (use-package sql
   :bind (("C-c d m" . sql-mysql)))
 
-
+
 ;;; Version control
 (use-package diff-hl
   :config (progn (global-diff-hl-mode)
@@ -1623,8 +1602,6 @@ is run with prefix argument - also execute resulting binary."
 
 (use-package magit-stgit)
 
-(use-package magit-rockstar)
-
 (use-package magit-topgit)
 
 (use-package magit-gh-pulls)
@@ -1652,7 +1629,7 @@ is run with prefix argument - also execute resulting binary."
 
 (use-package github-clone)
 
-
+
 ;;; Tools and utilities
 
 (use-package projectile                            ; Project management
@@ -1697,13 +1674,6 @@ is run with prefix argument - also execute resulting binary."
     (require #'grails-projectile-discover)
     (grails-projectile-discover-setup-keybindings))
   :diminish grails-projectile-mode)
-
-(use-package org-projectile
-  :bind (("C-c n p" . org-projectile:project-todo-completing-read))
-  :config
-  (progn
-    (setq org-projectile:projects-file "projects.org")
-    (setq org-agenda-files (append org-agenda-files (org-projectile:todo-files)))))
 
 (use-package projectile-rails
   :init (require #'projectile-rails)
@@ -1753,14 +1723,14 @@ is run with prefix argument - also execute resulting binary."
 
 (use-package bug-hunter)
 
-
+
 ;;; Terminal emulation and shells
 (use-package shell                                 ; Dump shell in Emacs
   :bind ("C-c u s" . shell))
 
 (use-package term                                  ; Terminal emulator in Emacs
   :bind ("C-c u S" . ansi-term))
-
+
 ;;; Net & Web
 (use-package eww                                   ; Emacs' built-in web browser
   :bind (("C-c w b" . eww-list-bookmarks)
@@ -1797,43 +1767,6 @@ is run with prefix argument - also execute resulting binary."
     (add-hook 'rcirc-mode-hook #'flyspell-mode)
     (rcirc-track-minor-mode)))
 
-
-;;; * Org Mode
-
-(use-package org
-  :diminish (orgstruct-mode . "")
-  :config (progn
-    (setq org-catch-invisible-edits 'smart)
-    (setq org-structure-template-alist '(("s" "#+begin_src ?\n\n#+end_src"
-    "<src lang=\"?\">\n\n</src>")
-   ("e" "#+begin_example\n?\n#+end_example"
-    "<example>\n?\n</example>")
-   ("q" "#+begin_quote\n?\n#+end_quote"
-    "<quote>\n?\n</quote>")
-   ("v" "#+begin_verse\n?\n#+end_verse"
-    "<verse>\n?\n</verse>")
-   ("v" "#+begin_verbatim\n?\n#+end_verbatim"
-    "<verbatim>\n?\n</verbatim>")
-   ("c" "#+begin_center\n?\n#+end_center"
-    "<center>\n?\n</center>")
-   ("l" "#+begin_latex\n?\n#+end_latex"
-    "<literal style=\"latex\">\n?\n</literal>")
-   ("l" "#+latex: "
-    "<literal style=\"latex\">?</literal>")
-   ("h" "#+begin_html\n?\n#+end_html"
-    "<literal style=\"html\">\n?\n</literal>")
-   ("h" "#+html: "
-    "<literal style=\"html\">?</literal>")
-   ("a" "#+begin_ascii\n?\n#+end_ascii" "")
-   ("a" "#+ascii: " "")
-   ("i" "#+index: ?" "#+index: ?")
-   ("i" "#+include: %file ?"
-    "<include file=%file markup=\"?\">")))
-    (add-hook 'prog-mode-hook 'turn-on-orgstruct)
-    (defun orgstruct-lisps-turn-on ()
-      (setq orgstruct-heading-prefix-regexp ";; "))
-    (add-hook 'lisps-mode-hook #'orgstruct-lisps-turn-on)))
-
 ;;; Online Help
 (use-package find-func                             ; Find function/variable definitions
   :bind (("C-x F"   . find-function)
@@ -1864,7 +1797,7 @@ is run with prefix argument - also execute resulting binary."
 (diminish 'auto-fill-function)
 (diminish 'abbrev-mode)
 
-
+
 ;;; Emacs Default Configuration
 
 
@@ -1881,7 +1814,7 @@ is run with prefix argument - also execute resulting binary."
 (put 'set-goal-column 'disabled nil)
 (set-cursor-color "orange")
 
-
+
 
 (use-package key-chord
   :config
@@ -1911,12 +1844,6 @@ is run with prefix argument - also execute resulting binary."
 
 (use-package goto-chg
   :bind ("C-M-." . goto-last-change))
-
-(use-package pandoc-mode
-  :config (progn (add-hook 'markdown-mode-hook #'pandoc-mode)
-     (add-hook 'org-mode-hook #'pandoc-mode)
-     (add-hook 'pandoc-mode-hook #'pandoc-load-default-settings))
-  :diminish pandoc-mode)
 
 (use-package swoop
   :bind (("C-o" . swoop)
