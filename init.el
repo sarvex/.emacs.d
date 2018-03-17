@@ -180,13 +180,13 @@
   :config
   (progn
     (setq dynamic-fonts-preferred-proportional-fonts
-      '("Nono Sans" "Fira Sans" "Helvetica" "Segoe UI" "DejaVu Sans" "Bitstream Vera" "Tahoma" "Verdana" "Arial Unicode MS" "Arial"))
+      '("Noto Sans" "Fira Sans" "Helvetica" "Segoe UI" "DejaVu Sans" "Bitstream Vera" "Tahoma" "Verdana" "Arial Unicode MS" "Arial"))
     (setq dynamic-fonts-preferred-proportional-point-size
-      (pcase system-type (`darwin 13) (`windows-nt 10) (`gnu/linux 13)))
+      (pcase system-type (`darwin 13) (`windows-nt 10) (`gnu/linux 10)))
     (setq dynamic-fonts-preferred-monospace-fonts
       '("Noto Mono" "Ubuntu Mono" "Source Code Pro" "Anonymous Pro" "Inconsolata" "Consolas" "Fira Mono" "Menlo" "DejaVu Sans Mono" "Bitstream Vera Mono" "Courier New"))
     (setq dynamic-fonts-preferred-monospace-point-size
-      (pcase system-type (`darwin 13) (`windows-nt 10) (`gnu/linux 13)))
+      (pcase system-type (`darwin 13) (`windows-nt 10) (`gnu/linux 10)))
     (dynamic-fonts-setup)))
 
 
@@ -226,22 +226,6 @@
 (use-package golden-ratio
   :config (golden-ratio-mode t)
   :diminish golden-ratio-mode)
-
-(use-package god-mode
-  :init
-  (progn
-    (require #'god-mode)
-    (require #'god-mode-isearch))
-  :bind ("<escape>" . god-local-mode)
-  :config
-  (progn
-    (defun my-update-cursor ()
-      (setq cursor-type (if (or god-local-mode buffer-read-only)
-    'hbar 'box)))
-    (add-hook 'god-mode-enabled-hook #'my-update-cursor)
-    (add-hook 'god-mode-disabled-hook #'my-update-cursor)
-    (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
-    (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)))
 
 ;;; The minibuffer
 (use-package savehist
